@@ -2,16 +2,16 @@
 
 ##### Basic radar parameters
 
-| Parameter       | Value   | Unit | Comment                                                      |
-| --------------- | ------- | ---- | ------------------------------------------------------------ |
-| c               |         |      | speed of light                                               |
-| sweep_time      | 0.001   | s    | Sweep time                                                   |
-| Sweep Frequency | 5.2~8.2 | GHz  |                                                              |
-| B               | 3       | GHz  | Sweep time                                                   |
-| S               | 3e12    |      | S = B / sweep_time                                           |
-| IF              | 1       | MHz  | adc sample,IF frequency                                      |
-| maximum range   |         | m    | IF  * c / (2 * S)                                            |
-| if_offset       | 140     | KHz  | Zero point estimation, due to the influence of signal cable length |
+| Parameter       | Value       | Unit | Comment                                                      |
+| --------------- | ----------- | ---- | ------------------------------------------------------------ |
+| c               | 3e8         |      | speed of light                                               |
+| sweep_time      | 0.0005      | s    | Sweep time                                                   |
+| Sweep Frequency | 2-4/5.2~8.2 | GHz  |                                                              |
+| B               | 2GHz/3GHz   | GHz  | Sweep time                                                   |
+| S               |             |      | S = B / sweep_time                                           |
+| IF              | 1           | MHz  | adc sample,IF frequency                                      |
+| maximum range   |             | m    | IF  * c / (2 * S)                                            |
+| if_offset       |             | KHz  | Zero point estimation, due to the influence of signal cable length |
 
 ##### Operations before power-on
 
