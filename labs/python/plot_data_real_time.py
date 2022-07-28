@@ -47,14 +47,14 @@ def process_data(param):
                 data = cache_pack['byte']
                 recv_buffer = recv_buffer + data
                 while True:
-                    start_index = recv_buffer.find(param.flag)
+                    start_index = recv_buffer.find(param['flag'])
                     if(start_index == -1):
                         break
-                    end_index = recv_buffer.find(param.flag,start_index + param.flag_size)
+                    end_index = recv_buffer.find(param['flag'],start_index + param['flag_size'])
                     if(end_index == -1):
                         break
                     pack = recv_buffer[start_index:end_index]
-                    save_pack,pack_dict = parse_pack_from_stream(pack)
+                    save_pack,pack_dict = parse_pack_from_stream(pack,param)
                     timestamp = pack_dict['t']
                     frame_no = pack_dict['fn']
                     tx = pack_dict['tx']
@@ -71,18 +71,18 @@ def process_data(param):
                         adc_data = pack_dict['adc']
                         adc_data = np.array(adc_data)
                         win_data = adc_data * np.hanning(len(adc_data))
-                        range_fft_n = param.num_range_nfft
+                        range_fft_n = param['num_range_nfft']
                         range_fft = np.fft.fft(win_data,range_fft_n)
                         iq = range_fft[0:int(range_fft_n/2)]
                         pack_list.append(iq)
-                        if len(pack_list) >= param.frame_size:
+                        if len(pack_list) >= param['frame_size']:
                             t1 = time.time()
                             loop_pack_list = pack_list
                             frames = np.array(loop_pack_list)
                             # print(frames.shape)
                             frames = frames.reshape(loop_size,num_tx,num_rx,-1)
                             range_time, range_doppler,range_azimuth,range_elevation = p.process_by_canpon(frames)
-                            plot_datas = [range_time, range_doppler,range_azimuth,range_elevation]
+                            plot_datas = [range_time.T, range_doppler.T,range_azimuth.T,range_elevation.T]
                             plot.update(plot_datas)
                             cost_t = time.time() - t2
                             t2 = time.time()
@@ -107,7 +107,7 @@ def main():
     recv_thd = threading.Thread(target=r.recv_data)
     recv_thd.setDaemon(True)
     recv_thd.start()    
-    process_data()
+    process_data(param)
 
 if __name__ == '__main__':
     main()

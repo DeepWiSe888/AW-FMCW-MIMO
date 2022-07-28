@@ -51,7 +51,7 @@ def parse_pack_from_file(param,pack):
     pack_dict = {'tx':tx_antenna_no,'rx':rx_antenna_no,'fn':frame_no,'t':timestamp,'adc':adc}
     return pack_dict
 
-def parse_pack_from_stream(pack):
+def parse_pack_from_stream(pack,param):
     """
     parse stream packet
 
@@ -71,8 +71,8 @@ def parse_pack_from_stream(pack):
     """
     cursor = 0
     # flag
-    flag_pack_tmp = pack[0:cursor + flag_size]
-    cursor = cursor + flag_size
+    flag_pack_tmp = pack[0:cursor + param['flag_size']]
+    cursor = cursor + param['flag_size']
 
     # antenna no
     tx_pack_tmp = pack[cursor:cursor + 2]

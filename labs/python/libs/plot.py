@@ -1,4 +1,5 @@
 import sys
+import numpy as np
 from pyqtgraph.Qt import QtGui, QtCore,QtWidgets
 import pyqtgraph.opengl as gl
 import pyqtgraph as pg
@@ -6,7 +7,7 @@ import matplotlib.pyplot as plt
 
 
 class PlotData():
-    def __init__(self):
+    def __init__(self,curves = []):
         # Set graphical window, its title and size
         self.win = pg.GraphicsLayoutWidget(show=True)
         self.win.resize(800,600)
@@ -18,7 +19,10 @@ class PlotData():
         self.curves = []
         
         #definde different style
-        self.curves = self._plot_style_1()
+        if len(curves) > 0:
+            self.curves = curves
+        else:
+            self.curves = self._plot_style_1()
         self._start()
         
     def _plot_style_1(self):
@@ -77,10 +81,14 @@ class PlotData():
     def update(self,datas):
         assert len(self.curves) == len(datas),'The number of curves is equal to the number datas'
         for i in range(len(datas)):
+            data = np.array(datas[i])
             if hasattr(self.curves[i],'setImage'):
-                self.curves[i].setImage(datas[i].T)
+                self.curves[i].setImage(data)
             elif hasattr(self.curves[i],'setData'):
-                self.curves[i].setData(datas[i].T)
+                if data.ndim > 1:
+                    self.curves[i].setData(data[0],data[1])
+                else:
+                    self.curves[i].setData(data)
             else:
                 pass
         #update plot immediate

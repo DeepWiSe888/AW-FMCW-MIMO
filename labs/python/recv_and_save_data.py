@@ -50,7 +50,7 @@ def main():
                     if(end_index == -1):
                         break
                     pack = recv_buffer[start_index:end_index]
-                    save_pack,pack_dict = parse_pack_from_stream(pack)
+                    save_pack,pack_dict = parse_pack_from_stream(pack,param)
                     timestamp = pack_dict['t']
                     frame_no = pack_dict['fn']
                     tx_antenna_no = pack_dict['tx']

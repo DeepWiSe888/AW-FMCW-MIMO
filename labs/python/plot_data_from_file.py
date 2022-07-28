@@ -16,7 +16,7 @@ from libs.mti import Mti
 
 
 def main():
-    file_name = './data/1657266081901.dat'
+    file_name = './data/1658977383294.dat'
     reader = RawDataReader(file_name,param)
     framelist = []
     while True:
@@ -43,10 +43,10 @@ def main():
     
     for i in range(0,frame_cnt - loop_size,step_size):
         frames = range_data[i:i+loop_size,:,:,:]
-        X,Y,Z,E = p.point_cloud(frames)
-        # range_time, range_doppler,range_azimuth,range_elevation = p.process_by_canpon(frames)
-        # plot_datas = [range_time, range_doppler,range_azimuth,np.dot(range_azimuth,range_elevation.T)]
-        # plot.update(plot_datas)
+        # X,Y,Z,E = p.point_cloud(frames)
+        range_time, range_doppler,range_azimuth,range_elevation = p.process_by_canpon(frames)
+        plot_datas = [range_time.T, range_doppler.T,range_azimuth.T,range_elevation.T]
+        plot.update(plot_datas)
         time.sleep(0.1)
 
     
