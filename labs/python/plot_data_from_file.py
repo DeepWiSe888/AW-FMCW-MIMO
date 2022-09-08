@@ -7,16 +7,16 @@ from pyqtgraph.Qt import QtGui, QtCore,QtWidgets
 import pyqtgraph.opengl as gl
 import pyqtgraph as pg
 
-from libs.utils import *
+from libs.utils import *    
 from libs.conf import param
 from libs.reader import RawDataReader
 from libs.process import Process
 from libs.plot import PlotData
-from libs.mti import Mti
+from libs.mti import Mti 
 
 
 def main():
-    file_name = './data/1658977383294.dat'
+    file_name = './data/1662514454218.dat'
     reader = RawDataReader(file_name,param)
     framelist = []
     while True:
@@ -24,13 +24,11 @@ def main():
         if frame is None:
             break
         framelist.append(frame)
-
     txs = np.unique([f['tx'] for f in framelist])
     rxs = np.unique([f['rx'] for f in framelist])
-
-    param['txs'] = txs
+    param['txs'] = txs 
     param['rxs'] = rxs
-    framelist = align_data(framelist,param)
+    framelist = align_data(framelist,param) 
     range_data = struct_to_cube(framelist,param)
     (frame_cnt,num_tx,num_rx,bin_cnt) = range_data.shape
     # loop each tx * rx; 1/2 sec

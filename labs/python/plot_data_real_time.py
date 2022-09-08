@@ -24,6 +24,7 @@ def process_data(param):
     t1 = t2 = time.time()
 
     # config
+    adc_len = param["adc_len"]
     txs = param['txs']
     rxs = param['rxs']
     num_tx = param['num_tx']
@@ -69,7 +70,7 @@ def process_data(param):
                         start_save = True
                     if start_save:
                         adc_data = pack_dict['adc']
-                        adc_data = np.array(adc_data)
+                        adc_data = adc_data[:adc_len]
                         win_data = adc_data * np.hanning(len(adc_data))
                         range_fft_n = param['num_range_nfft']
                         range_fft = np.fft.fft(win_data,range_fft_n)

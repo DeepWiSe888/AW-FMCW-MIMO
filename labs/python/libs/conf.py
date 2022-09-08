@@ -9,7 +9,7 @@
 The radar basic characteristic
 '''
 
-radar_band = "C"
+radar_band = "S"
 
 if radar_band == "C":
     # the radar sweep time
@@ -28,13 +28,16 @@ if radar_band == "C":
     c = 3e8
 
     # IF adc sample 1MHz
-    if_fs = 1e6
+    if_fs = 2e6
 
     # offeset IF = 140 KHz
-    offset_if = 140e3
+    offset_if = 300e3
 
     # antenna fps
     fps = 2000
+    
+    # the number of points of range fft
+    num_range_nfft = 2048
 
 elif radar_band == "S":
     # the radar sweep time
@@ -53,16 +56,22 @@ elif radar_band == "S":
     if_fs = 2e6
 
     # offeset IF = 140 KHz
-    offset_if = 210e3
+    offset_if = 350e3
 
     # antenna fps
     fps = 2000
+    
+    # the number of points of range fft
+    num_range_nfft = 2048
 
 # speed of light
 c = 3e8
 
 # slope
 S = B / sweep_time
+
+# adc data len 
+adc_len = int(if_fs / fps / 2)
 
 
 # an object at a distance d produces an IF frequence of:
@@ -107,9 +116,6 @@ frame_size = num_loop_per_frame * loop_size
 # remove dc
 remove_dc = True
 
-# the number of points of range fft
-num_range_nfft = 512
-
 # the number of points of range bin
 num_range_bins = num_range_nfft // 2
 
@@ -129,9 +135,8 @@ interp_points = 4
 search_start = round(offset_if / if_fs * num_range_nfft)
 
 # scann area,unit:m
-scann_area = 3
-# search_end = round(search_start + scann_area / range_res)
-search_end = 150
+scann_area = 5
+search_end = round(search_start + scann_area / range_res)
 
 # azimuth range
 azimuth_x_min = -(search_end - search_start)
@@ -157,6 +162,7 @@ param['rxs'] = rxs
 param['num_tx'] = num_tx
 param['num_rx'] = num_rx
 param['fps'] = fps
+param["adc_len"] = adc_len
 param["flag"] = flag
 param["flag_size"] = flag_size
 param["loop_size"]= loop_size

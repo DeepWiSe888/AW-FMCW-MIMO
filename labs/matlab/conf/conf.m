@@ -1,5 +1,5 @@
 %% radar basic characteristic
-radar_band  = "C";
+radar_band  = "S";
 if radar_band == "C"
     % the radar sweep time
     sweep_time = 0.5e-3;
@@ -21,6 +21,9 @@ if radar_band == "C"
 
     % antenna fps
     fps = 2000;
+    
+    % the number of points of range fft
+    num_range_nfft = 512;
 elseif radar_band == "S"
     % the radar sweep time
     sweep_time = 0.5e-3;
@@ -35,13 +38,16 @@ elseif radar_band == "S"
     B = end_freq - start_freq;
 
     % IF adc sample 1MHz
-    if_fs = 2e6;
+    if_fs = 1e6;
 
     % offeset IF = 140 KHz
-    offset_if = 210e3;
+    offset_if = 100e3;
 
     % antenna fps
     fps = 2000;
+    
+    % the number of points of range fft
+    num_range_nfft = 2048;
 end
 % speed of light
 c = 3e8;
@@ -84,9 +90,6 @@ frame_size = num_loop_per_frame * loop_size;
 % remove dc
 remove_dc = 1;
 
-% the number of points of range fft
-num_range_nfft = 512;
-
 % the number of points of range bin
 num_range_bins = num_range_nfft / 2;
 
@@ -105,6 +108,6 @@ search_start = round(offset_if / if_fs * num_range_nfft);
 % scann area,unit:m
 scann_area = 3;
 
-% search_end = round(search_start + scann_area / range_res)
-search_end = 150;
+search_end = round(search_start + scann_area / range_res);
+% search_end = 150;
 

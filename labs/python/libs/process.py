@@ -15,11 +15,14 @@ class Process(object):
         #range fft
         raw_data = raw_data[:,:,:,search_start:search_end]
         (frame_cnt_n,tx_cnt,rx_cnt,bin_cnt) = raw_data.shape
-        data = np.zeros((frame_cnt_n,tx_cnt,12,bin_cnt),dtype=np.complex_)
-        data[:,0,:,:] = raw_data[:,0,0:12,:]
-        data[:,1,:,:] = raw_data[:,1,1:13,:]
-        data[:,2,:,:] = raw_data[:,2,2:14,:]
-        data[:,3,:,:] = raw_data[:,3,3:15,:]
+        if radar_band == "C":
+            data = np.zeros((frame_cnt_n,tx_cnt,12,bin_cnt),dtype=np.complex_)
+            data[:,0,:,:] = raw_data[:,0,0:12,:]
+            data[:,1,:,:] = raw_data[:,1,1:13,:]
+            data[:,2,:,:] = raw_data[:,2,2:14,:]
+            data[:,3,:,:] = raw_data[:,3,3:15,:]
+        elif radar_band == "S":
+            data = raw_data
         
         (frame_cnt_n,tx_cnt,rx_cnt,bin_cnt) = data.shape
         
@@ -65,27 +68,37 @@ class Process(object):
         raw_data = raw_data[:,:,:,search_start:search_end]
         (frame_cnt_n,tx_cnt,rx_cnt,bin_cnt) = raw_data.shape
         data = np.zeros((frame_cnt_n,tx_cnt,12,bin_cnt),dtype=np.complex_)
-        data[:,0,:,:] = raw_data[:,0,0:12,:]
-        data[:,1,:,:] = raw_data[:,1,1:13,:]
-        data[:,2,:,:] = raw_data[:,2,2:14,:]
-        data[:,3,:,:] = raw_data[:,3,3:15,:]
-        
-        (frame_cnt_n,tx_cnt,rx_cnt,bin_cnt) = data.shape
+        if radar_band == "C":
+            data[:,0,:,:] = raw_data[:,0,0:12,:]
+            data[:,1,:,:] = raw_data[:,1,1:13,:]
+            data[:,2,:,:] = raw_data[:,2,2:14,:]
+            data[:,3,:,:] = raw_data[:,3,3:15,:]
 
+        elif radar_band == "S":
+            data[:,0,:,:] = raw_data[:,0,3:15,:]
+            data[:,1,:,:] = raw_data[:,1,2:14,:]
+            data[:,2,:,:] = raw_data[:,2,1:13,:]
+            data[:,3,:,:] = raw_data[:,3,0:12,:]
+            
+        (frame_cnt_n,tx_cnt,rx_cnt,bin_cnt) = data.shape
         data = data - np.mean(data,0)
+            
+        # range azimuth
+        azimuth_data = np.mean(data[:,:,0:6,:],1)
+        
+        # range elevation
+        elevation_data = np.mean(data[:,0:4,0:6,:],2)
+        
         # range time
         range_time = np.mean(data,(1,2))
         
         # rang doppler
         range_doppler = np.fft.fftshift(np.fft.fft(range_time,64,0),0)
         
-
         # range azimuth
-        azimuth_data = np.mean(data[:,:,0:6,:],1)
         range_azimuth = capon(azimuth_data)
-        
+            
         # range elevation
-        elevation_data = np.mean(data[:,0:4,0:6,:],2)
         range_elevation = capon(elevation_data)
 
         # azimuth and elevation

@@ -144,6 +144,7 @@ def struct_to_cube(framelist,param):
     txs = param['txs']
     rxs = param['rxs']
     num_range_nfft = param["num_range_nfft"]
+    adc_len = param["adc_len"]
 
     num_tx = len(txs)
     num_rx = len(rxs)
@@ -158,6 +159,7 @@ def struct_to_cube(framelist,param):
                 idx = i*num_tx*num_rx + j* num_rx + k
                 frame = framelist[idx]
                 tmp = frame['adc']
+                tmp = np.array(tmp[:adc_len])
                 tmp_fft = range_fft(tmp,num_range_nfft)
                 range_data[i,j,k,:] = tmp_fft[:bin_cnt]
     return range_data
@@ -216,16 +218,19 @@ def capon(data):
     (frame_cnt_n,ant_cnt,bin_cnt) = data.shape
     steering_vector = gen_steering_vec(90,ant_cnt)
     capon_map = np.zeros((181,bin_cnt),dtype=np.complex_)
-    for i in range(bin_cnt):
-        X = data[:,:,i]
-        X = X.T
-        R = X @ np.conj(X.T)
-        R = forward_backward_avg(R)
-        R = np.divide(R, frame_cnt_n)
-        R_INV = np.linalg.inv(R)
-        tmp = R_INV @ steering_vector.T
-        mvdr_result = np.reciprocal(np.einsum('ij,ij->i', steering_vector.conj(), tmp.T))
-        capon_map[:,i] = np.array(abs(mvdr_result))
+    try:
+        for i in range(bin_cnt):
+            X = data[:,:,i]
+            X = X.T
+            R = X @ np.conj(X.T)
+            R = forward_backward_avg(R)
+            R = np.divide(R, frame_cnt_n)
+            R_INV = np.linalg.inv(R)
+            tmp = R_INV @ steering_vector.T
+            mvdr_result = np.reciprocal(np.einsum('ij,ij->i', steering_vector.conj(), tmp.T))
+            capon_map[:,i] = np.array(abs(mvdr_result))
+    except:
+        print("data error")
     capon_map = np.real(capon_map)
     capon_map_conv = smooth_matrix(capon_map)
     return capon_map_conv

@@ -61,12 +61,21 @@ Each frame contains flag、tx no、rx no、frame no adc data.
    pip install -r requirements.txt -i https://pypi.mirrors.ustc.edu.cn/simple/
    ```
 
-2. Changing the  IP Address
+2. Changing the Radar Type from conf.py
+
+   ```python
+   '''
+   The radar basic characteristic
+   '''
+   radar_band = "S"
+   ```
+
+3. Changing the  IP Address
 
    1. The FPGA default IP address is  "192.168.0.2",default port is 5000;By default ,it send to the IP address "192.168.0.3" and port 6000.
    2. So modify the localhost IP address to "192.168.0.3".
 
-3. Select the antenna number you want to use by modifying txs list and rxs list
+4. Select the antenna number you want to use by modifying txs list and rxs list
 
    ```python
    local_udp_ip = "192.168.0.3"
@@ -82,13 +91,13 @@ Each frame contains flag、tx no、rx no、frame no adc data.
    msg,result = r.setting(txs,rxs)
    ```
 
-4. Plot data real time
+5. Plot data real time
 
    ```shell
    python plot_data_real_time.py
    ```
 
-5. Save raw data to file,
+6. Save raw data to file,
 
    1. You can run the following script if you want to save the data locally,and the file will be saved in './data/'.
 
@@ -98,7 +107,7 @@ Each frame contains flag、tx no、rx no、frame no adc data.
 
    2. This script saves the local time for easy time synchronization.
 
-6. Plot data from file
+7. Plot data from file
 
    ```shell
    python plot_data_from_file.py
